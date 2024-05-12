@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Reddit+Mono:wght@200..900&display=swap" rel="stylesheet">
+  <title>Quiz App</title>
+  <style>
+    /* Your CSS styles */
+    * {
+      margin: 0;
+      padding: 0;
+      font-family: "Poppins", sans-serif;
+    }
+    body {
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-image: linear-gradient(#855ae9, #19006c);
+    }
+    .container {
+      width: 640px;
+      background: white;
+      border-radius: 10px;
+      padding: 40px 50px;
+      box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+    }
+    .container h1 {
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      text-align: center;
+      color: #553f9a;
+    }
+    .container hr {
+      height: 2px;
+      border: none;
+      background: #707070;
+      margin-bottom: 30px;
+    }
+    .container h2 {
+      font-size: 24px;
+      font-weight: 500;
+      margin-bottom: 20px;
+    }
+    .container ul li {
+      display: flex;
+      align-items: center;
+      height: 70px;
+      padding-left: 15px;
+      border: 1px solid #686868;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      font-size: 20px;
+      cursor: pointer;
+    }
+    .container button {
+      width: 100%;
+      height: 65px;
+      background: #553f9a;
+      color: white;
+      font-size: 24px;
+      font-weight: 500;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      display: none;
+    }
+    .index {
+      text-align: center;
+      margin-top: 30px;
+      font-size: 18px;
+      color: #686868;
+    }
+    .container .correct{
+        background: #dffff2;
+        border-color: #00d397;
+    }
+    .container .wrong{
+        background: #ffebeb;
+        border-color: #ff0000;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script src="https://unpkg.com/react@18.2.0/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script type="text/babel">
+
+    function QuizApp() {
+        const data = [
+  {
+    question: "Which device is required for the Internet connection?",
+    option1: "Modem",
+    option2: "Router",
+    option3: "LAN Cable",
+    option4: "Pen Drive",
+    ans: 1,
+  },
+  {
+    question: "Which continent has the highest number of countries?",
+    option1: "Asia",
+    option2: "Europe",
+    option3: "North America",
+    option4: "Africa",
+    ans: 4,
+  },
+  {
+    question: "Junk e-mail is also called?",
+    option1: "Spam",
+    option2: "Fake",
+    option3: "Archived",
+    option4: "Bin",
+    ans: 1,
+  },
+  {
+    question: "A computer cannot BOOT if it does not have the?",
+    option1: "Application Software",
+    option2: "Internet",
+    option3: "Operating System",
+    option4: "Mouse",
+    ans: 3,
+  },
+  {
+    question: "First page of Website is termed as?",
+    option1: "Index Page",
+    option2: "Homepage",
+    option3: "Sitemap",
+    option4: "Pen Drive",
+    ans: 2,
+  },
+  {
+    question: "Who is the author of the Harry Potter book series?",
+    option1: "J.K. Rowling",
+    option2: "Stephen King",
+    option3: "J.R.R. Tolkien",
+    option4: "George R.R. Martin",
+    ans: 1,
+  },
+  {
+    question: "What is the largest mammal in the world?",
+    option1: "Elephant",
+    option2: "Blue Whale",
+    option3: "Giraffe",
+    option4: "Hippopotamus",
+    ans: 2,
+  },
+  {
+    question: "Which planet is known as the Red Planet?",
+    option1: "Mars",
+    option2: "Venus",
+    option3: "Jupiter",
+    option4: "Saturn",
+    ans: 1,
+  },
+  {
+    question: "What is the capital of Australia?",
+    option1: "Sydney",
+    option2: "Melbourne",
+    option3: "Canberra",
+    option4: "Brisbane",
+    ans: 3,
+  },
+  {
+    question: "Who painted the Mona Lisa?",
+    option1: "Vincent van Gogh",
+    option2: "Leonardo da Vinci",
+    option3: "Pablo Picasso",
+    option4: "Michelangelo",
+    ans: 2,
+  },
+];
+
+
+const [index, setIndex] = React.useState(0);
+  const [lock, setLock] = React.useState(false);
+  const [score, setScore] = React.useState(0);
+  const [answered, setAnswered] = React.useState(false); // Track if a question has been answered
+  const question = data[index];
+  const isLastQuestion = index === data.length - 1;
+
+  const checkAnswer = (e, ans) => {
+    if (!lock) {
+      if (question.ans === ans) {
+        e.target.classList.add("correct");
+        setScore(score + 1);
+      } else {
+        e.target.classList.add("wrong");
+        const correctIndex = data[index].ans - 1;
+        document.querySelectorAll("li")[correctIndex].classList.add("correct");
+      }
+      setLock(true);
+      setAnswered(true); // Mark the question as answered
+    }
+  };
+
+  const handleNext = () => {
+    if (index < data.length - 1) {
+      setIndex(index + 1);
+      setLock(false);
+      setAnswered(false); // Reset answered status when moving to the next question
+      resetClasses(); // Call the resetClasses function
+    } else {
+      alert(`Quiz completed! Your score is ${score}/${data.length}`);
+      setIndex(0);
+      setScore(0);
+    }
+  };
+
+  const resetClasses = () => {
+    const options = document.querySelectorAll("li");
+    options.forEach((option) => {
+      option.classList.remove("correct", "wrong");
+    });
+  };
+      return (
+        <div className="container">
+          <h1>Quiz App</h1>
+          <hr />
+          <h2>{index + 1}. {question.question}</h2>
+          <ul>
+            <li onClick={(e)=> {checkAnswer(e,1)}}>{question.option1}</li>
+            <li onClick={(e)=> {checkAnswer(e,2)}}>{question.option2}</li>
+            <li onClick={(e)=> {checkAnswer(e,3)}}>{question.option3}</li>
+            <li onClick={(e)=> {checkAnswer(e,4)}}>{question.option4}</li>
+          </ul>
+          <button onClick={handleNext} style={{ display: lock ? 'block' : 'none' }} >Next</button>
+          <div className="index">
+            {index + 1} of {data.length} questions
+          </div>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById("root")).render(<QuizApp />);
+  </script>
+</body>
+</html>
