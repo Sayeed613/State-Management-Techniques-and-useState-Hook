@@ -180,7 +180,7 @@
 const [index, setIndex] = React.useState(0);
   const [lock, setLock] = React.useState(false);
   const [score, setScore] = React.useState(0);
-  const [answered, setAnswered] = React.useState(false); // Track if a question has been answered
+  const [answered, setAnswered] = React.useState(false);
   const question = data[index];
   const isLastQuestion = index === data.length - 1;
 
@@ -195,7 +195,7 @@ const [index, setIndex] = React.useState(0);
         document.querySelectorAll("li")[correctIndex].classList.add("correct");
       }
       setLock(true);
-      setAnswered(true); // Mark the question as answered
+      setAnswered(true);
     }
   };
 
@@ -203,8 +203,8 @@ const [index, setIndex] = React.useState(0);
     if (index < data.length - 1) {
       setIndex(index + 1);
       setLock(false);
-      setAnswered(false); // Reset answered status when moving to the next question
-      resetClasses(); // Call the resetClasses function
+      setAnswered(false);
+      resetClasses();
     } else {
       alert(`Quiz completed! Your score is ${score}/${data.length}`);
       setIndex(0);
